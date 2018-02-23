@@ -1,0 +1,13 @@
+version: '2'
+
+services:
+
+  app:
+    build: .
+    environment:
+      RAILS_ENV: test
+    volumes:
+      - gems:/home/docker/.rvm/gems
+
+volumes:
+  gems: {}
