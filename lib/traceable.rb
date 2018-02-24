@@ -54,6 +54,7 @@ module Traceable
   end
 end
 
+require 'traceable/args'
 require 'traceable/class_methods'
 require 'traceable/config'
 require 'traceable/tracer'
