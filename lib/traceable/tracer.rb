@@ -5,28 +5,22 @@ module Traceable
   # generate log entries. Each log entry consists of a key/value
   # map ("tags"). Tags will be inherited from a parent instance,
   # if provided.
+
+  # rubocop:disable Metrics/ClassLength
   class Tracer
-    attr_reader :logger
-    attr_reader :id
+    attr_accessor :logger
     attr_reader :parent
     attr_reader :tags
 
-    def initialize(parent_tracer, tags: nil)
-      @logger = Traceable.config.logger
-
-      @parent = case parent_tracer
-                when nil
-                  nil
-                when Tracer
-                  parent_tracer
-                when Traceable
-                  parent_tracer.local_tracer
-                else
-                  raise(ArgumentError, "#{parent_tracer} (#{parent_tracer.class})")
-                end
-
+    def initialize(parent_tracer, tags: nil, logger: nil)
+      @parent = which_parent(parent_tracer)
+      @logger = logger || (@parent ? @parent.logger : Tracer.default_logger)
       @tags = @parent ? @parent.tags.dup : Tracer.default_tags
       @tags.merge!(tags) if tags
+    end
+
+    def self.default_logger
+      Traceable.config.logger
     end
 
     def self.default_tags
@@ -126,6 +120,21 @@ module Traceable
       Thread.current[:tracer_stack] ||= []
     end
 
+    private
+
+    def which_parent(parent_tracer)
+      case parent_tracer
+      when nil
+        nil
+      when Tracer
+        parent_tracer
+      when Traceable
+        parent_tracer.local_tracer
+      else
+        raise(ArgumentError, "#{parent_tracer} (#{parent_tracer.class})")
+      end
+    end
+
     def push
       Tracer.tracer_stack.push self
     end
@@ -134,4 +143,5 @@ module Traceable
       Tracer.tracer_stack.pop
     end
   end
+  # rubocop:enable Metrics/ClassLength
 end

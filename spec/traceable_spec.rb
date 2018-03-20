@@ -18,7 +18,7 @@ RSpec.describe Traceable do
   let(:logs) { fake_logger.logs }
 
   before do
-    allow_any_instance_of(Traceable::Tracer).to receive(:logger) { fake_logger }
+    allow_any_instance_of(Traceable::Config).to receive(:logger) { fake_logger }
   end
 
   let(:subject_class) do
@@ -320,6 +320,19 @@ RSpec.describe Traceable do
           t = Traceable::Tracer.new(nil)
           expect(t).to receive(:emit_tags).twice.and_call_original
           t.info(message: 'just a test')
+        end
+      end
+
+      context 'with a custom logger' do
+        let(:logger2) { FakeLogger.new }
+        let(:logger3) { FakeLogger.new }
+
+        it 'sends logs to it' do
+          t = Traceable::Tracer.new(nil, logger: logger2)
+          expect { t.info(message: 'hello') }.to change { logger2.logs.size }.by 1
+
+          t.logger = logger3
+          expect { t.info(message: 'hi again') }.to change { logger3.logs.size }.by 1
         end
       end
     end
