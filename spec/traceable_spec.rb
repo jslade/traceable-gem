@@ -44,7 +44,8 @@ RSpec.describe Traceable do
 
       def trace_as_a_block
         trace 'an example' do
-          trace 'a nested block' do
+          trace 'a nested block' do |tt|
+            tt[:blah] = 'blah'
             true
           end
         end
@@ -133,6 +134,14 @@ RSpec.describe Traceable do
           count += 1
         end
         expect(count).to be(2)
+      end
+
+      it 'includes tags added in the block' do
+        subject.trace_as_a_block
+        count_exit = logs.select { |log| log[:tags].key?(:exit) }.count
+        count_blah = logs.select { |log| log[:tags].key?(:exit) && log[:tags][:blah] == 'blah' }.count
+        expect(count_exit).to be(2)
+        expect(count_blah).to be(1)
       end
     end
 

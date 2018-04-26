@@ -77,7 +77,7 @@ module Traceable
 
       begin
         push
-        yield
+        yield tags
       rescue StandardError => ex
         elapsed = Time.now.utc - block_start_time
         if ex.instance_variable_defined?(:@traceable_rescued)
