@@ -53,8 +53,9 @@ RSpec.describe Traceable do
 
       def self.a_class_method
         trace 'in a class method'
-        trace 'in a class method with a block' do
+        trace 'in a class method with a block' do |trace_tags|
           trace.info 'test'
+          raise if trace_tags.nil?
         end
       end
     end

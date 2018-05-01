@@ -55,7 +55,7 @@ module Traceable
       tracer = Tracer.new(Tracer.default_parent)
 
       if block_given?
-        tracer.do_block(msg, **tags) { yield }
+        tracer.do_block(msg, **tags) { |trace_tags| yield trace_tags }
       elsif msg
         tracer.info msg, **tags
       else
