@@ -45,8 +45,10 @@ module Traceable
 
     def emit_tags(method, tags)
       logger.send(method, tags)
+      nil
     rescue StandardError => ex
       warn "EXCEPTION in trace: #{ex}"
+      nil
     end
 
     def fatal(msg, **tags)
