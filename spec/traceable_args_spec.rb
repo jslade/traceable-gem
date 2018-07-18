@@ -27,14 +27,15 @@ RSpec.describe Traceable::Args do
   end
 
   let(:letters) { %w[a b c d e f g h i j k l m n o p q r s t u v w x y z] }
-
+  let(:long_string) { 'abcdefghijklmnopqrstuvwxyz'. * 1000 }
+  let(:long_string_truncated) { long_string[0..4997] + '...' }
+  
   describe '#format_value' do
-    let(:long_string) { 'abcdefghijklmnopqrstuvwxyz'. * 1000 }
     let(:number) { 1 }
 
     it 'truncates long strings' do
       expect(Traceable::Args.format_value(long_string))
-        .to eq(long_string[0..4997] + '...')
+        .to eq(long_string_truncated)
     end
 
     it 'returns simple values un-modified' do
@@ -58,6 +59,11 @@ RSpec.describe Traceable::Args do
       expect(Traceable::Args.format_hash_of_values(h))
         .to eq(a: 'a', b: 'b', c: 'c', d: 'd', e: 'e',
                f: 'f', g: 'g', h: 'h', i: 'i', ___: '...(17)')
+    end
+
+    it 'truncates long strings in hashes' do
+      expect(Traceable::Args.format_hash_of_values({ foo: long_string }))
+        .to eq(foo: long_string_truncated)
     end
   end
 end
