@@ -19,6 +19,15 @@ module Traceable
       return val.to_trace if val.respond_to? :to_trace
       return format_array_of_values(val) if val.is_a? Array
       return format_hash_of_values(val) if val.is_a? Hash
+      return format_string(val) if val.is_a? String
+      val
+    end
+
+    MAX_STRING_LENGTH = 5000
+    TRUNC_STRING_LENGTH = MAX_STRING_LENGTH - 3
+
+    def self.format_string(val)
+      return val[0..TRUNC_STRING_LENGTH] + '...' if val.size > MAX_STRING_LENGTH
       val
     end
 

@@ -28,6 +28,23 @@ RSpec.describe Traceable::Args do
 
   let(:letters) { %w[a b c d e f g h i j k l m n o p q r s t u v w x y z] }
 
+  describe '#format_value' do
+    let(:long_string) { 'abcdefghijklmnopqrstuvwxyz'. * 1000 }
+    let(:number) { 1 }
+
+    it 'truncates long strings' do
+      expect(Traceable::Args.format_value(long_string))
+        .to eq(long_string[0..4997] + '...')
+    end
+
+    it 'returns simple values un-modified' do
+      expect(Traceable::Args.format_value(number)). to be number
+      expect(Traceable::Args.format_value(nil)). to be nil
+      expect(Traceable::Args.format_value(true)). to be true
+      expect(Traceable::Args.format_value(false)). to be false
+    end
+  end
+
   describe '#format_array_of_values' do
     it 'truncates long arrays' do
       expect(Traceable::Args.format_array_of_values(letters))

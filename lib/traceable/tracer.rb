@@ -40,7 +40,11 @@ module Traceable
     end
 
     def make_tags(**tags)
-      @tags.merge(tags)
+      format_tags(@tags.merge(tags))
+    end
+
+    def format_tags(tags)
+      tags.each_with_object(tags) { |(k, v), t| t[k] = Args.format_value(v) }
     end
 
     def emit_tags(method, tags)
