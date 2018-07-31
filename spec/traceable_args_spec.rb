@@ -1,6 +1,14 @@
 # frozen_string_literal: true
 
 RSpec.describe Traceable::Args do
+  before do
+    Traceable.configure do |config|
+      config.max_string_length = 2000
+      config.max_array_values = 10
+      config.max_hash_keys = 10
+    end
+  end
+
   describe '#args_to_tags' do
     class Foo
       class << self
@@ -27,9 +35,9 @@ RSpec.describe Traceable::Args do
   end
 
   let(:letters) { %w[a b c d e f g h i j k l m n o p q r s t u v w x y z] }
-  let(:long_string) { 'abcdefghijklmnopqrstuvwxyz'. * 1000 }
-  let(:long_string_truncated) { long_string[0..4997] + '...' }
-  
+  let(:long_string) { 'abcdefghijklmnopqrstuvwxyz'. * 100 }
+  let(:long_string_truncated) { long_string[0..1997] + '...' }
+
   describe '#format_value' do
     let(:number) { 1 }
 
@@ -62,7 +70,7 @@ RSpec.describe Traceable::Args do
     end
 
     it 'truncates long strings in hashes' do
-      expect(Traceable::Args.format_hash_of_values({ foo: long_string }))
+      expect(Traceable::Args.format_hash_of_values(foo: long_string))
         .to eq(foo: long_string_truncated)
     end
   end
