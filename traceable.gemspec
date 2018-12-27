@@ -14,7 +14,7 @@ Gem::Specification.new do |s|
   s.email       = ['jeremy@jkslade.net']
 
   s.summary     = 'Instrument code with logging'
-  s.homepage    = 'https://github.com/instructure/inst-jobs-statsd'
+  s.homepage    = 'https://github.com/jslade/traceable-gem'
   s.license     = 'MIT'
 
   s.files = Dir['{lib}/**/*']
